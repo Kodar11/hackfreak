@@ -8,6 +8,7 @@ export interface ParsedCommand {
 const COMPOUND_COMMANDS: Record<string, string[]> = {
   persona: ['create', 'set', 'show', 'list', 'delete'],
   ai: ['analyze'],
+  export: ['report'],
 };
 
 export function parseCommand(input: string): ParsedCommand {

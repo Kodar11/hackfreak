@@ -1,0 +1,31 @@
+{
+  "steps": [
+    { "type": "header", "text": "── EMERGENCY LOCKDOWN PROTOCOL ──" },
+    { "type": "delay", "duration": 500 },
+    { "type": "system", "text": "[!] THREAT LEVEL: CRITICAL" },
+    { "type": "delay", "duration": 800 },
+    { "type": "system", "text": "[*] Initiating Countermeasures..." },
+    { "type": "delay", "duration": 600 },
+    { "type": "log", "text": "    Closing External Channels..." },
+    { "type": "progress", "label": "Channel isolation", "progressDuration": 2000 },
+    { "type": "delay", "duration": 400 },
+    { "type": "log", "text": "    Purging Active Sessions..." },
+    { "type": "progress", "label": "Session purge", "progressDuration": 1800 },
+    { "type": "delay", "duration": 400 },
+    { "type": "log", "text": "    Encrypting Intelligence Cache..." },
+    { "type": "progress", "label": "Cache encryption", "progressDuration": 2200 },
+    { "type": "delay", "duration": 400 },
+    { "type": "log", "text": "    Securing Satellite Uplinks..." },
+    { "type": "progress", "label": "Uplink security", "progressDuration": 2000 },
+    { "type": "delay", "duration": 600 },
+    { "type": "system", "text": "[*] Verifying Lockdown Integrity..." },
+    { "type": "delay", "duration": 800 },
+    { "type": "success", "text": "[✓] LOCKDOWN COMPLETE" },
+    { "type": "log", "text": "    All external channels: CLOSED" },
+    { "type": "log", "text": "    Active sessions: PURGED" },
+    { "type": "log", "text": "    Intelligence cache: ENCRYPTED" },
+    { "type": "log", "text": "    Satellite uplinks: SECURED" },
+    { "type": "delay", "duration": 400 },
+    { "type": "system", "text": "[*] System is now in secure mode." }
+  ]
+}

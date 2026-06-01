@@ -65,6 +65,12 @@ export function TerminalInput({ disabled }: TerminalInputProps) {
       return;
     }
 
+    if (e.key === 'F11') {
+      e.preventDefault();
+      await executeCommand('fullscreen');
+      return;
+    }
+
     if (e.key === 'Tab') {
       e.preventDefault();
       const trimmed = input.trim();

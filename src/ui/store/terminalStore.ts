@@ -23,6 +23,8 @@ interface TerminalState {
   sessionId: string;
   monitorActive: boolean;
   theme: string;
+  isFullscreen: boolean;
+  isGlitching: boolean;
   addLine: (text: string, type: LineType) => string;
   updateLine: (id: string, updates: Partial<TerminalLine>) => void;
   clearLines: () => void;
@@ -35,6 +37,8 @@ interface TerminalState {
   setSessionId: (id: string) => void;
   setMonitorActive: (active: boolean) => void;
   setTheme: (theme: string) => void;
+  setFullscreen: (fullscreen: boolean) => void;
+  setGlitching: (glitching: boolean) => void;
 }
 
 let lineCounter = 0;
@@ -50,6 +54,8 @@ export const useTerminalStore = create<TerminalState>((set) => ({
   sessionId: '',
   monitorActive: false,
   theme: 'matrix',
+  isFullscreen: false,
+  isGlitching: false,
 
   addLine: (text, type) => {
     const id = `line-${++lineCounter}-${Date.now()}`;
@@ -86,4 +92,8 @@ export const useTerminalStore = create<TerminalState>((set) => ({
   setMonitorActive: (active) => set({ monitorActive: active }),
 
   setTheme: (theme) => set({ theme }),
+
+  setFullscreen: (fullscreen) => set({ isFullscreen: fullscreen }),
+
+  setGlitching: (glitching) => set({ isGlitching: glitching }),
 }));

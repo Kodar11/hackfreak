@@ -1,10 +1,12 @@
 import { useTerminalStore, type ThreatLevel } from '../store/terminalStore';
 import { usePersonaStore } from '../store/personaStore';
-import { listDir, changeDir, getDisplayPath, readFile } from './fileSystem';
+import { listDir, changeDir, getDisplayPath, readFile, writeFile } from './fileSystem';
 import { parseCommand } from './commandParser';
 import { runScene } from './sceneEngine';
 import { randomScore, randomClassification } from './randomGenerators';
 import { THEMES, applyTheme } from './themes';
+import { maybeTriggerGlitch } from './glitchEngine';
+import { runAuthorizationSequence } from './authorizationHelper';
 import scanScene from './scenes/scan.json';
 import traceScene from './scenes/trace.json';
 import decryptScene from './scenes/decrypt.json';
@@ -14,6 +16,7 @@ import locateScene from './scenes/locate.json';
 import statusScene from './scenes/status.json';
 import satelliteScene from './scenes/satellite.json';
 import aiAnalyzeScene from './scenes/ai_analyze.json';
+import lockdownScene from './scenes/lockdown.json';
 import type { Scene } from './sceneEngine';
 
 const HELP_TEXT = [
@@ -39,6 +42,8 @@ const HELP_TEXT = [
   '  network <target>      Display target network graph',
   '  timeline <target>     Show target timeline',
   '  monitor <target>      Start live monitoring (Ctrl+C to stop)',
+  '  report <target>       Generate intelligence report',
+  '  investigate <target>  Run full investigation workflow',
   '',
   '  persona create <name> Create a new persona',
   '  persona show <name>   Display persona intelligence report',
@@ -46,6 +51,9 @@ const HELP_TEXT = [
   '  persona set <n> <f> <v>  Set persona field',
   '  persona delete <name> Delete a persona',
   '',
+  '  export report <name>  Export report to filesystem',
+  '  lockdown              Initiate emergency lockdown',
+  '  fullscreen            Toggle fullscreen mode (or press F11)',
   '  theme <name>          Change terminal theme (matrix/military/cyberpunk/amber)',
 ];
 
@@ -59,6 +67,7 @@ const SCENE_MAP: Record<string, Scene> = {
   status: statusScene as Scene,
   satellite: satelliteScene as Scene,
   ai_analyze: aiAnalyzeScene as Scene,
+  lockdown: lockdownScene as Scene,
 };
 
 const THREAT_LEVELS: Record<string, ThreatLevel> = {
@@ -70,6 +79,7 @@ const THREAT_LEVELS: Record<string, ThreatLevel> = {
   decrypt: 'MEDIUM',
   breach: 'CRITICAL',
   ai_analyze: 'MEDIUM',
+  lockdown: 'CRITICAL',
 };
 
 function buildVariables(target: string | undefined): Record<string, string> {
@@ -160,9 +170,11 @@ export async function executeCommand(input: string): Promise<void> {
     case 'ai': {
       if (subcommand === 'analyze') {
         const target = args[0];
+        await runAuthorizationSequence('ai_analyze');
         const vars = buildVariables(target);
         const sceneKey = 'ai_analyze';
         store.setThreatLevel(THREAT_LEVELS[sceneKey] ?? 'LOW');
+        await maybeTriggerGlitch();
         await runScene(sceneKey, SCENE_MAP[sceneKey], vars);
         store.setThreatLevel('LOW');
       } else {
@@ -271,11 +283,97 @@ export async function executeCommand(input: string): Promise<void> {
           store.addLine(`Packet Flow: ${packets}/s`, 'output');
           store.addLine('', 'output');
           
+          await maybeTriggerGlitch();
+          
           await new Promise(r => setTimeout(r, 3000));
         }
       };
       
       monitorLoop();
+      break;
+    }
+
+    case 'fullscreen': {
+      const isCurrentlyFullscreen = store.isFullscreen;
+      if (isCurrentlyFullscreen) {
+        store.setFullscreen(false);
+        store.addLine('Exiting Fullscreen Mode...', 'system');
+        store.addLine('System Interface Restored.', 'success');
+      } else {
+        store.setFullscreen(true);
+        store.addLine('Entering Fullscreen Mode...', 'system');
+        store.addLine('System Interface Expanded.', 'success');
+        store.addLine('Use F11 or fullscreen to exit.', 'output');
+      }
+      break;
+    }
+
+    case 'report': {
+      const target = args[0];
+      if (!target) {
+        store.addLine('Usage: report <target>', 'error');
+        break;
+      }
+      
+      const persona = usePersonaStore.getState().getPersona(target);
+      if (!persona) {
+        store.addLine(`Target "${target}" not found. Create with: persona create ${target}`, 'error');
+        break;
+      }
+      
+      await generateReport(target, persona);
+      break;
+    }
+
+    case 'investigate': {
+      const target = args[0];
+      if (!target) {
+        store.addLine('Usage: investigate <target>', 'error');
+        break;
+      }
+      
+      await runAuthorizationSequence('investigate');
+      await runInvestigation(target);
+      break;
+    }
+
+    case 'export': {
+      if (subcommand === 'report') {
+        const target = args[0];
+        if (!target) {
+          store.addLine('Usage: export report <target>', 'error');
+          break;
+        }
+        
+        const persona = usePersonaStore.getState().getPersona(target);
+        if (!persona) {
+          store.addLine(`Target "${target}" not found.`, 'error');
+          break;
+        }
+        
+        await exportReport(target, persona);
+      } else {
+        store.addLine(`ERROR: Unknown export type "${subcommand || ''}".`, 'error');
+        store.addLine('Usage: export report <target>', 'error');
+      }
+      break;
+    }
+
+    case 'satellite': {
+      const target = args[0];
+      await runAuthorizationSequence('satellite');
+      const vars = buildVariables(target);
+      store.setThreatLevel(THREAT_LEVELS['satellite'] ?? 'LOW');
+      await maybeTriggerGlitch();
+      await runScene('satellite', SCENE_MAP['satellite'], vars);
+      store.setThreatLevel('LOW');
+      break;
+    }
+
+    case 'lockdown': {
+      await runAuthorizationSequence('lockdown');
+      store.setThreatLevel('CRITICAL');
+      await runScene('lockdown', SCENE_MAP['lockdown'], {});
       break;
     }
 
@@ -285,6 +383,12 @@ export async function executeCommand(input: string): Promise<void> {
         const target = args[0];
         const vars = buildVariables(target);
         store.setThreatLevel(THREAT_LEVELS[command] ?? 'LOW');
+        
+        const glitchScenes = ['satellite', 'locate', 'ai_analyze'];
+        if (glitchScenes.includes(command)) {
+          await maybeTriggerGlitch();
+        }
+        
         await runScene(command, scene, vars);
         store.setThreatLevel('LOW');
       } else {
@@ -419,10 +523,217 @@ async function handlePersona(subcommand: string, args: string[]): Promise<void> 
   }
 }
 
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function generateReport(target: string, persona: Record<string, string>): Promise<void> {
+  const store = useTerminalStore.getState();
+  
+  const classification = randomClassification();
+  const behaviorScore = randomScore(50, 95);
+  const riskScore = randomScore(40, 90);
+  const confidence = randomScore(70, 99);
+  
+  const assets = Object.keys(persona).filter(k => k !== 'name');
+  const targetName = persona.name || target;
+  
+  store.addLine('', 'output');
+  store.addLine('================================================', 'header');
+  store.addLine('INTELLIGENCE REPORT', 'header');
+  store.addLine('================================================', 'header');
+  store.addLine('', 'output');
+  store.addLine(`Target: ${targetName}`, 'output');
+  store.addLine('', 'output');
+  store.addLine(`Classification: ${classification}`, 'system');
+  store.addLine('', 'output');
+  store.addLine(`Risk Score: ${riskScore}`, 'output');
+  store.addLine(`Behavior Score: ${behaviorScore}`, 'output');
+  store.addLine(`Confidence: ${confidence}%`, 'output');
+  store.addLine('', 'output');
+  store.addLine('Known Assets:', 'system');
+  
+  assets.forEach(asset => {
+    store.addLine(`  • ${asset}`, 'output');
+  });
+  
+  store.addLine('', 'output');
+  store.addLine('Summary:', 'system');
+  store.addLine(`  Target exhibits elevated communication activity`, 'output');
+  store.addLine(`  across multiple channels.`, 'output');
+  store.addLine('', 'output');
+  store.addLine(`  Behavioral indicators suggest moderate`, 'output');
+  store.addLine(`  operational risk.`, 'output');
+  store.addLine('', 'output');
+  store.addLine('================================================', 'header');
+  store.addLine('', 'output');
+}
+
+async function runInvestigation(target: string): Promise<void> {
+  const store = useTerminalStore.getState();
+  const persona = usePersonaStore.getState().getPersona(target);
+  
+  store.setProcessing(true);
+  store.setThreatLevel('HIGH');
+  
+  try {
+    store.addLine('', 'output');
+    store.addLine('── INVESTIGATION PROTOCOL ──', 'header');
+    store.addLine(`Target: ${target}`, 'system');
+    store.addLine('', 'output');
+    
+    store.addLine('Phase 1: Asset Discovery', 'header');
+    await delay(500);
+    store.addLine('  Scanning Assets...', 'system');
+    await delay(800);
+    store.addLine('  Locating Endpoints...', 'system');
+    await delay(800);
+    store.addLine('  Correlating Identities...', 'system');
+    await delay(800);
+    store.addLine('  Generating Profile...', 'system');
+    await delay(600);
+    store.addLine('', 'output');
+    
+    await maybeTriggerGlitch();
+    
+    store.addLine('Phase 2: Deep Analysis', 'header');
+    await delay(500);
+    
+    if (persona) {
+      store.addLine(`  Running: persona show ${target}`, 'output');
+      await delay(300);
+      await generateReport(target, persona);
+      
+      store.addLine(`  Running: network ${target}`, 'output');
+      await delay(300);
+      const fields = Object.keys(persona).filter(k => k !== 'name');
+      store.addLine('', 'output');
+      store.addLine('── Network Analysis ──', 'header');
+      store.addLine(target, 'system');
+      fields.forEach((field, i) => {
+        const isLast = i === fields.length - 1;
+        const prefix = isLast ? '└── ' : '├── ';
+        store.addLine(`${prefix}${field}`, 'output');
+      });
+      store.addLine('', 'output');
+      await delay(500);
+      
+      store.addLine(`  Running: timeline ${target}`, 'output');
+      await delay(300);
+      const classification = randomClassification();
+      store.addLine('', 'output');
+      store.addLine('── Timeline Reconstruction ──', 'header');
+      store.addLine(`CLASSIFICATION: ${classification}`, 'system');
+      store.addLine('', 'output');
+      const events = [
+        { time: '09:14', event: 'Device Activated' },
+        { time: '09:22', event: 'Network Connected' },
+        { time: '10:01', event: `Location Updated${persona?.city ? ` (${persona.city})` : ''}` },
+        { time: '10:17', event: 'Social Activity Detected' },
+        { time: '10:41', event: 'Signal Lost' },
+        { time: '11:03', event: 'Signal Recovered' },
+        { time: '11:28', event: 'Communication Intercepted' },
+      ];
+      events.forEach(({ time, event }) => {
+        store.addLine(`[${time}] ${event}`, 'output');
+      });
+      store.addLine('', 'output');
+      await delay(500);
+      
+      store.addLine(`  Running: ai analyze ${target}`, 'output');
+      await delay(300);
+      const vars = buildVariables(target);
+      await runScene('ai_analyze', SCENE_MAP['ai_analyze'], vars);
+    } else {
+      store.addLine(`  Target "${target}" has no persona data.`, 'error');
+      store.addLine(`  Create with: persona create ${target}`, 'output');
+    }
+    
+    await maybeTriggerGlitch();
+    
+    store.addLine('', 'output');
+    store.addLine('Phase 3: Investigation Summary', 'header');
+    await delay(600);
+    
+    const assetCount = persona ? Object.keys(persona).filter(k => k !== 'name').length : 0;
+    const finalConfidence = randomScore(85, 98);
+    const threatLevel: ThreatLevel = assetCount > 3 ? 'HIGH' : assetCount > 1 ? 'MEDIUM' : 'LOW';
+    
+    store.addLine('', 'output');
+    store.addLine('================================================', 'header');
+    store.addLine('INVESTIGATION COMPLETE', 'header');
+    store.addLine('================================================', 'header');
+    store.addLine('', 'output');
+    store.addLine(`Assets Correlated: ${assetCount}`, 'output');
+    store.addLine(`Threat Level: ${threatLevel}`, 'system');
+    store.addLine(`Confidence: ${finalConfidence}%`, 'output');
+    store.addLine('', 'output');
+    store.addLine('================================================', 'header');
+    store.addLine('', 'output');
+    
+    store.setThreatLevel(threatLevel);
+  } finally {
+    store.setProcessing(false);
+  }
+}
+
+async function exportReport(target: string, persona: Record<string, string>): Promise<void> {
+  const store = useTerminalStore.getState();
+  
+  store.addLine(`Exporting report for ${target}...`, 'system');
+  await delay(500);
+  
+  const classification = randomClassification();
+  const behaviorScore = randomScore(50, 95);
+  const riskScore = randomScore(40, 90);
+  const confidence = randomScore(70, 99);
+  const assets = Object.keys(persona).filter(k => k !== 'name');
+  const targetName = persona.name || target;
+  
+  const reportContent = [
+    '================================================',
+    'INTELLIGENCE REPORT',
+    '================================================',
+    '',
+    `Target: ${targetName}`,
+    '',
+    `Classification: ${classification}`,
+    '',
+    `Risk Score: ${riskScore}`,
+    `Behavior Score: ${behaviorScore}`,
+    `Confidence: ${confidence}%`,
+    '',
+    'Known Assets:',
+    ...assets.map(a => `  • ${a}`),
+    '',
+    'Summary:',
+    '  Target exhibits elevated communication activity',
+    '  across multiple channels.',
+    '',
+    '  Behavioral indicators suggest moderate',
+    '  operational risk.',
+    '',
+    '================================================',
+  ].join('\n');
+  
+  const filePath = `/intelligence/reports/${target}_report.txt`;
+  const result = writeFile(filePath, reportContent);
+  
+  if (result.success) {
+    store.addLine(`Report exported successfully.`, 'success');
+    store.addLine(`Location: ${filePath}`, 'output');
+    store.addLine(`View with: cat ${filePath}`, 'output');
+  } else {
+    store.addLine(`Export failed: ${result.error}`, 'error');
+  }
+}
+
 export const ALL_COMMANDS = [
   'help', 'ls', 'cd', 'pwd', 'cat', 'clear',
   'scan', 'trace', 'decrypt', 'breach', 'analyze', 'locate', 'status',
   'satellite', 'ai analyze',
+  'network', 'monitor', 'timeline', 'report', 'investigate',
   'persona create', 'persona show', 'persona list', 'persona set', 'persona delete',
-  'network', 'monitor', 'timeline', 'theme',
+  'export report',
+  'lockdown', 'fullscreen', 'theme',
 ];

@@ -437,3 +437,49 @@ export function readFile(currentPath: string, target: string): { success: boolea
 
   return { success: false, error: `cat: ${target}: [BINARY DATA — cannot display]` };
 }
+
+export function ensureDirectory(path: string): void {
+  const normalized = normalizePath(path);
+  if (normalized === '/') return;
+
+  const segments = normalized.split('/').filter(Boolean);
+  let current: FileNode = fileSystem['/'];
+
+  for (const seg of segments) {
+    if (!current.children) {
+      current.children = {};
+    }
+    if (!current.children[seg]) {
+      current.children[seg] = { type: 'directory', children: {} };
+    }
+    current = current.children[seg];
+  }
+}
+
+export function writeFile(path: string, content: string): { success: boolean; error?: string } {
+  const normalized = normalizePath(path);
+  const segments = normalized.split('/').filter(Boolean);
+  
+  if (segments.length === 0) {
+    return { success: false, error: 'write: invalid path' };
+  }
+
+  const fileName = segments.pop()!;
+  const dirPath = '/' + segments.join('/');
+
+  ensureDirectory(dirPath);
+
+  const dirNode = getNode(dirPath);
+  if (!dirNode || dirNode.type !== 'directory') {
+    return { success: false, error: `write: cannot create directory: ${dirPath}` };
+  }
+
+  if (!dirNode.children) {
+    dirNode.children = {};
+  }
+
+  dirNode.children[fileName] = { type: 'file' };
+  fileContents[normalized] = content;
+
+  return { success: true };
+}

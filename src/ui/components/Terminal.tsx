@@ -30,6 +30,8 @@ export function Terminal() {
   const isProcessing = useTerminalStore((s) => s.isProcessing);
   const isBooting = useTerminalStore((s) => s.isBooting);
   const bootComplete = useTerminalStore((s) => s.bootComplete);
+  const isGlitching = useTerminalStore((s) => s.isGlitching);
+  const isFullscreen = useTerminalStore((s) => s.isFullscreen);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,10 +49,23 @@ export function Terminal() {
     }
   }, [lines]);
 
+  useEffect(() => {
+    if (isFullscreen) {
+      document.documentElement.requestFullscreen?.().catch(() => {});
+    } else if (document.fullscreenElement) {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  }, [isFullscreen]);
+
   const inputDisabled = isProcessing || isBooting;
 
+  const containerClasses = [
+    'terminal-container',
+    isGlitching ? 'terminal-glitch' : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className="terminal-container">
+    <div className={containerClasses}>
       <div className="terminal-output" ref={scrollRef}>
         {lines.map((line) => (
           <LineRenderer key={line.id} line={line} />
