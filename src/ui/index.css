@@ -55,79 +55,83 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
+  padding: 8px 16px;
   background-color: #111;
   border-bottom: 1px solid #1a1a1a;
   -webkit-app-region: drag;
   user-select: none;
   flex-shrink: 0;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
 }
 
 .app-titlebar-left {
   display: flex;
   align-items: center;
   gap: 10px;
+  height: 100%;
 }
 
-.app-titlebar-dots {
+.app-titlebar-center {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }
 
-.app-titlebar-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+.app-titlebar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  -webkit-app-region: no-drag;
 }
-
-.app-titlebar-dot-red { background-color: #ff5f57; }
-.app-titlebar-dot-yellow { background-color: #ffbd2e; }
-.app-titlebar-dot-green { background-color: #28c840; }
 
 .app-titlebar-title {
-  font-size: 12px;
   color: #666;
+  font-weight: 600;
   letter-spacing: 0.15em;
-  text-transform: uppercase;
+}
+
+.session-id {
+  color: #555;
+  letter-spacing: 0.1em;
 }
 
 .app-titlebar-buttons {
   display: flex;
-  gap: 8px;
-  -webkit-app-region: no-drag;
+  gap: 2px;
 }
 
-.app-titlebar-btn {
+.titlebar-button {
   all: unset;
   cursor: pointer;
-  width: 32px;
+  width: 36px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
   color: #666;
-  font-size: 14px;
   transition: background-color 0.15s, color 0.15s;
+  -webkit-app-region: no-drag;
 }
 
-.app-titlebar-btn:hover {
-  background-color: #222;
+.titlebar-button:hover {
+  background-color: #2a2a2a;
   color: #ccc;
 }
 
-.app-titlebar-btn-close:hover {
+.titlebar-button-close:hover {
   background-color: #e81123;
   color: #fff;
 }
 
 .threat-badge {
   font-size: 10px;
-  font-weight: bold;
+  font-weight: 600;
   letter-spacing: 0.1em;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 3px;
-  text-transform: uppercase;
   -webkit-app-region: no-drag;
 }
 
@@ -201,39 +205,6 @@ body {
   );
   pointer-events: none;
   z-index: 11;
-}
-
-.threat-indicator {
-  position: absolute;
-  top: 8px;
-  right: 16px;
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 0.1em;
-  padding: 3px 10px;
-  border-radius: 3px;
-  z-index: 12;
-  pointer-events: none;
-}
-
-.threat-low {
-  color: #00ff41;
-}
-
-.threat-medium {
-  color: #ffcc00;
-  text-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
-}
-
-.threat-high {
-  color: #ff8800;
-  text-shadow: 0 0 10px rgba(255, 136, 0, 0.5);
-}
-
-.threat-critical {
-  color: #ff3333;
-  text-shadow: 0 0 12px rgba(255, 51, 51, 0.6);
-  animation: pulse-critical 1.5s ease-in-out infinite;
 }
 
 .terminal-output {
@@ -342,28 +313,19 @@ body {
 
 .terminal-input {
   all: unset;
-  flex: 1;
+  flex: 0 1 auto;
+  min-width: 1ch;
+  margin-left: 0.5ch;
   color: var(--term-input);
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
-  caret-color: transparent;
+  caret-color: var(--term-text);
   text-shadow: 0 0 5px var(--term-glow);
 }
 
 .terminal-input:disabled {
   opacity: 0.5;
-}
-
-.terminal-cursor {
-  display: inline-block;
-  width: 8px;
-  height: 18px;
-  background-color: var(--term-text);
-  animation: blink 1s step-end infinite;
-  margin-left: 1px;
-  flex-shrink: 0;
-  box-shadow: 0 0 6px var(--term-glow);
 }
 
 @keyframes blink {

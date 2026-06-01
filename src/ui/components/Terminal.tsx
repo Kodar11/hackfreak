@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useTerminalStore, type TerminalLine } from '../store/terminalStore';
 import { TerminalInput } from './TerminalInput';
 import { runBootSequence } from '../terminal/bootSequence';
+import { startBackgroundEngine } from '../terminal/backgroundEngine';
 
 let bootStarted = false;
 
@@ -29,13 +30,14 @@ export function Terminal() {
   const isProcessing = useTerminalStore((s) => s.isProcessing);
   const isBooting = useTerminalStore((s) => s.isBooting);
   const bootComplete = useTerminalStore((s) => s.bootComplete);
-  const threatLevel = useTerminalStore((s) => s.threatLevel);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!bootStarted && !bootComplete && !isBooting) {
       bootStarted = true;
-      runBootSequence();
+      runBootSequence().then(() => {
+        startBackgroundEngine();
+      });
     }
   }, [bootComplete, isBooting]);
 
@@ -49,11 +51,6 @@ export function Terminal() {
 
   return (
     <div className="terminal-container">
-      {threatLevel !== 'LOW' && (
-        <div className={`threat-indicator threat-${threatLevel.toLowerCase()}`}>
-          THREAT: {threatLevel}
-        </div>
-      )}
       <div className="terminal-output" ref={scrollRef}>
         {lines.map((line) => (
           <LineRenderer key={line.id} line={line} />

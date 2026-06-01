@@ -1,8 +1,7 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 import { ipcMainOn, isDev } from './util.js';
 import { getPreloadPath, getUIPath } from './pathResolver.js';
 import { createTray } from './tray.js';
-import { createMenu } from './menu.js';
 
 app.on('ready', () => {
   const mainWindow = new BrowserWindow({
@@ -11,6 +10,9 @@ app.on('ready', () => {
     },
     frame: false,
   });
+  
+  Menu.setApplicationMenu(null);
+  
   if (isDev()) {
     mainWindow.loadURL('http://localhost:5123');
   } else {
@@ -23,7 +25,11 @@ app.on('ready', () => {
         mainWindow.close();
         break;
       case 'MAXIMIZE':
-        mainWindow.maximize();
+        if (mainWindow.isMaximized()) {
+          mainWindow.unmaximize();
+        } else {
+          mainWindow.maximize();
+        }
         break;
       case 'MINIMIZE':
         mainWindow.minimize();
@@ -31,9 +37,20 @@ app.on('ready', () => {
     }
   });
 
+  ipcMain.handle('getIsMaximized', () => {
+    return mainWindow.isMaximized();
+  });
+
+  mainWindow.on('maximize', () => {
+    mainWindow.webContents.send('window-state-changed', true);
+  });
+
+  mainWindow.on('unmaximize', () => {
+    mainWindow.webContents.send('window-state-changed', false);
+  });
+
   createTray(mainWindow);
   handleCloseEvents(mainWindow);
-  createMenu(mainWindow);
 });
 
 function handleCloseEvents(mainWindow: BrowserWindow) {

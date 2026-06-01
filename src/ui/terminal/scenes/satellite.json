@@ -29,6 +29,8 @@
     { "type": "log", "text": "    Coordinates:  {{coord}}" },
     { "type": "log", "text": "    Confidence:   {{percent}}%" },
     { "type": "log", "text": "    Heat sig:     POSITIVE" },
+    { "type": "delay", "duration": 800 },
+    { "type": "access_granted" },
     { "type": "delay", "duration": 1000 },
     { "type": "target_acquired" },
     { "type": "success", "text": "[✓] Satellite lock confirmed on {{target}}." }

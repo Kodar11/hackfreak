@@ -17,7 +17,7 @@ import {
 import { maybeInjectAlert } from './alerts';
 
 export interface SceneStep {
-  type: 'log' | 'delay' | 'progress' | 'success' | 'error' | 'header' | 'system' | 'target_acquired';
+  type: 'log' | 'delay' | 'progress' | 'success' | 'error' | 'header' | 'system' | 'target_acquired' | 'access_granted';
   text?: string;
   duration?: number;
   label?: string;
@@ -70,6 +70,18 @@ async function renderTargetAcquired(
   store.addLine('>>>  Target Acquired  <<<', 'header');
   store.addLine('', 'output');
   await delay(1200);
+}
+
+async function renderAccessGranted(
+  store: ReturnType<typeof useTerminalStore.getState>
+): Promise<void> {
+  store.addLine('', 'output');
+  await delay(500);
+  store.addLine('AUTHENTICATION ACCEPTED', 'success');
+  await delay(300);
+  store.addLine('ACCESS GRANTED', 'header');
+  await delay(800);
+  store.addLine('', 'output');
 }
 
 export async function runScene(sceneName: string, sceneData: Scene, variables: Variables = {}): Promise<void> {
@@ -130,6 +142,10 @@ export async function runScene(sceneName: string, sceneData: Scene, variables: V
 
         case 'target_acquired':
           await renderTargetAcquired(store);
+          break;
+
+        case 'access_granted':
+          await renderAccessGranted(store);
           break;
 
         case 'progress': {

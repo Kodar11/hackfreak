@@ -37,6 +37,8 @@
     { "type": "log", "text": "    Confidence:    {{percent}}%" },
     { "type": "log", "text": "    Threat vector: {{hex}}-{{hex}}" },
     { "type": "log", "text": "    Report ID:     {{shortHash}}" },
+    { "type": "delay", "duration": 800 },
+    { "type": "access_granted" },
     { "type": "delay", "duration": 1000 },
     { "type": "target_acquired" },
     { "type": "success", "text": "[✓] AI analysis of {{target}} complete." }

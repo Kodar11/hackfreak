@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from 'react';
 import { useTerminalStore } from '../store/terminalStore';
 import { usePersonaStore } from '../store/personaStore';
-import { executeCommand } from '../terminal/commands';
+import { executeCommand, ALL_COMMANDS } from '../terminal/commands';
 import { getDisplayPath } from '../terminal/fileSystem';
 
 interface TerminalInputProps {
@@ -55,6 +55,31 @@ export function TerminalInput({ disabled }: TerminalInputProps) {
   };
 
   const handleKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'c' && e.ctrlKey) {
+      const store = useTerminalStore.getState();
+      if (store.monitorActive) {
+        store.setMonitorActive(false);
+        addLine('^C', 'input');
+        addLine('Monitor stopped.', 'system');
+      }
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const trimmed = input.trim();
+      if (!trimmed) return;
+      
+      const matches = ALL_COMMANDS.filter(cmd => cmd.startsWith(trimmed));
+      if (matches.length === 1) {
+        setInput(matches[0]);
+      } else if (matches.length > 1) {
+        addLine(trimmed, 'input');
+        matches.forEach(m => addLine(`  ${m}`, 'output'));
+      }
+      return;
+    }
+
     if (e.key === 'Enter') {
       const trimmed = input.trim();
       if (trimmed) {
@@ -120,7 +145,6 @@ export function TerminalInput({ disabled }: TerminalInputProps) {
           autoComplete="off"
           autoCapitalize="off"
         />
-        <span className="terminal-cursor" />
       </div>
     );
   }
@@ -144,7 +168,6 @@ export function TerminalInput({ disabled }: TerminalInputProps) {
         autoComplete="off"
         autoCapitalize="off"
       />
-      {!disabled && <span className="terminal-cursor" />}
     </div>
   );
 }

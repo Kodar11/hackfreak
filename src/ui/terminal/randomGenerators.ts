@@ -85,3 +85,19 @@ export function randomProtocol(): string {
   const protocols = ['TCP', 'UDP', 'ICMP', 'HTTP', 'HTTPS', 'SSH', 'FTP', 'DNS'];
   return protocols[Math.floor(Math.random() * protocols.length)];
 }
+
+export function randomScore(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function randomClassification(): string {
+  const levels = ['PUBLIC', 'INTERNAL', 'RESTRICTED', 'CONFIDENTIAL', 'LEVEL-7'];
+  return levels[Math.floor(Math.random() * levels.length)];
+}
+
+export function randomSessionId(): string {
+  const chars = '0123456789ABCDEF';
+  const part1 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * 16)]).join('');
+  const part2 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * 16)]).join('');
+  return `${part1}-${part2}`;
+}

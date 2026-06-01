@@ -34,6 +34,7 @@
     { "type": "system", "text": "[*] Escalating privileges on {{target}}..." },
     { "type": "progress", "label": "Privilege escalation", "progressDuration": 2000 },
     { "type": "delay", "duration": 400 },
+    { "type": "access_granted" },
     { "type": "system", "text": "[+] Access granted." },
     { "type": "log", "text": "    User:    root" },
     { "type": "log", "text": "    UID:     0" },

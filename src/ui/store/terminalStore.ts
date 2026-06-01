@@ -20,6 +20,9 @@ interface TerminalState {
   bootComplete: boolean;
   threatLevel: ThreatLevel;
   personaMode: string | null;
+  sessionId: string;
+  monitorActive: boolean;
+  theme: string;
   addLine: (text: string, type: LineType) => string;
   updateLine: (id: string, updates: Partial<TerminalLine>) => void;
   clearLines: () => void;
@@ -29,6 +32,9 @@ interface TerminalState {
   setBootComplete: () => void;
   setThreatLevel: (level: ThreatLevel) => void;
   setPersonaMode: (name: string | null) => void;
+  setSessionId: (id: string) => void;
+  setMonitorActive: (active: boolean) => void;
+  setTheme: (theme: string) => void;
 }
 
 let lineCounter = 0;
@@ -41,6 +47,9 @@ export const useTerminalStore = create<TerminalState>((set) => ({
   bootComplete: false,
   threatLevel: 'LOW',
   personaMode: null,
+  sessionId: '',
+  monitorActive: false,
+  theme: 'matrix',
 
   addLine: (text, type) => {
     const id = `line-${++lineCounter}-${Date.now()}`;
@@ -71,4 +80,10 @@ export const useTerminalStore = create<TerminalState>((set) => ({
   setThreatLevel: (level) => set({ threatLevel: level }),
 
   setPersonaMode: (name) => set({ personaMode: name }),
+
+  setSessionId: (id) => set({ sessionId: id }),
+
+  setMonitorActive: (active) => set({ monitorActive: active }),
+
+  setTheme: (theme) => set({ theme }),
 }));

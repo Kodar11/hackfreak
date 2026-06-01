@@ -1,4 +1,5 @@
 import { useTerminalStore } from '../store/terminalStore';
+import { randomSessionId } from './randomGenerators';
 
 const BOOT_LINES: { text: string; type: 'system' | 'success' | 'header'; delay: number }[] = [
   { text: 'Initializing Hacker Terminal OS v4.2.1...', type: 'system', delay: 300 },
@@ -23,10 +24,16 @@ export async function runBootSequence(): Promise<void> {
   const store = useTerminalStore.getState();
   store.setBooting(true);
 
+  const sessionId = randomSessionId();
+  store.setSessionId(sessionId);
+
   for (const line of BOOT_LINES) {
     store.addLine(line.text, line.type);
     await delay(line.delay);
   }
+
+  store.addLine(`SESSION: ${sessionId}`, 'system');
+  store.addLine('', 'output');
 
   store.setBootComplete();
 }
