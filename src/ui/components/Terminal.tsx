@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useTerminalStore, type TerminalLine } from '../store/terminalStore';
 import { TerminalInput } from './TerminalInput';
+import { runBootSequence } from '../terminal/bootSequence';
+
+let bootStarted = false;
 
 function LineRenderer({ line }: { line: TerminalLine }) {
   const classMap: Record<string, string> = {
@@ -11,6 +14,7 @@ function LineRenderer({ line }: { line: TerminalLine }) {
     progress: 'terminal-progress-line',
     header: 'terminal-header-line',
     success: 'terminal-success-line',
+    alert: 'terminal-alert-line',
   };
 
   return (
@@ -23,7 +27,17 @@ function LineRenderer({ line }: { line: TerminalLine }) {
 export function Terminal() {
   const lines = useTerminalStore((s) => s.lines);
   const isProcessing = useTerminalStore((s) => s.isProcessing);
+  const isBooting = useTerminalStore((s) => s.isBooting);
+  const bootComplete = useTerminalStore((s) => s.bootComplete);
+  const threatLevel = useTerminalStore((s) => s.threatLevel);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!bootStarted && !bootComplete && !isBooting) {
+      bootStarted = true;
+      runBootSequence();
+    }
+  }, [bootComplete, isBooting]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -31,22 +45,21 @@ export function Terminal() {
     }
   }, [lines]);
 
+  const inputDisabled = isProcessing || isBooting;
+
   return (
     <div className="terminal-container">
-      <div className="terminal-output" ref={scrollRef}>
-        <div className="terminal-boot">
-          <div className="terminal-header-line">╔══════════════════════════════════════════════════════╗</div>
-          <div className="terminal-header-line">║         FRICTION OS v4.2.1 — SECURE TERMINAL        ║</div>
-          <div className="terminal-header-line">╚══════════════════════════════════════════════════════╝</div>
-          <div className="terminal-system-line">[*] System initialized. All modules loaded.</div>
-          <div className="terminal-system-line">[*] Type "help" to view available commands.</div>
-          <div className="terminal-output-line">&nbsp;</div>
+      {threatLevel !== 'LOW' && (
+        <div className={`threat-indicator threat-${threatLevel.toLowerCase()}`}>
+          THREAT: {threatLevel}
         </div>
+      )}
+      <div className="terminal-output" ref={scrollRef}>
         {lines.map((line) => (
           <LineRenderer key={line.id} line={line} />
         ))}
       </div>
-      <TerminalInput disabled={isProcessing} />
+      <TerminalInput disabled={inputDisabled} />
     </div>
   );
 }

@@ -1,10 +1,8 @@
 {
   "steps": [
-    { "type": "header", "text": "╔══════════════════════════════════════════╗" },
-    { "type": "header", "text": "║        DECRYPTION ENGINE v5.2.0          ║" },
-    { "type": "header", "text": "╚══════════════════════════════════════════╝" },
+    { "type": "header", "text": "── DECRYPTION ENGINE v5.2.0 ──" },
     { "type": "delay", "duration": 500 },
-    { "type": "system", "text": "[*] Loading encrypted payload..." },
+    { "type": "system", "text": "[*] Loading encrypted payload for {{target}}..." },
     { "type": "log", "text": "    File: intercepted_comm_042.enc" },
     { "type": "log", "text": "    Size: {{bytes}}" },
     { "type": "log", "text": "    Cipher: AES-256-GCM" },
@@ -36,11 +34,11 @@
     { "type": "log", "text": "    Padding:        VALID" },
     { "type": "log", "text": "    Auth tag:       VERIFIED" },
     { "type": "delay", "duration": 300 },
-    { "type": "system", "text": "[+] Decryption complete." },
+    { "type": "system", "text": "[+] Decryption complete for {{target}}." },
     { "type": "log", "text": "    Blocks processed: 4,096" },
     { "type": "log", "text": "    Output size:      {{bytes}}" },
     { "type": "log", "text": "    Output hash:      {{hash}}" },
     { "type": "delay", "duration": 200 },
-    { "type": "success", "text": "[✓] Payload decrypted successfully. Output saved to /intelligence/decrypted/" }
+    { "type": "success", "text": "[✓] Payload for {{target}} decrypted successfully." }
   ]
 }

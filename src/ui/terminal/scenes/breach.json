@@ -1,15 +1,13 @@
 {
   "steps": [
-    { "type": "header", "text": "╔══════════════════════════════════════════╗" },
-    { "type": "header", "text": "║        BREACH PROTOCOL v1.8.3            ║" },
-    { "type": "header", "text": "╚══════════════════════════════════════════╝" },
+    { "type": "header", "text": "── BREACH PROTOCOL v1.8.3 ──" },
     { "type": "delay", "duration": 500 },
-    { "type": "system", "text": "[*] Target acquired: {{ip}}:{{port}}" },
+    { "type": "system", "text": "[*] Target acquired: {{target}} ({{ip}}:{{port}})" },
     { "type": "log", "text": "    Hostname: {{server}}" },
     { "type": "log", "text": "    OS: Linux 5.15.0-generic" },
     { "type": "log", "text": "    Firewall: iptables (active)" },
     { "type": "delay", "duration": 800 },
-    { "type": "system", "text": "[*] Scanning for vulnerabilities..." },
+    { "type": "system", "text": "[*] Scanning {{target}} for vulnerabilities..." },
     { "type": "progress", "label": "Vulnerability scan", "progressDuration": 3000 },
     { "type": "delay", "duration": 300 },
     { "type": "system", "text": "[+] Vulnerabilities found:" },
@@ -21,7 +19,7 @@
     { "type": "log", "text": "    Payload: reverse_shell_staged" },
     { "type": "log", "text": "    Encoder: x64/shikata_ga_nai (5 rounds)" },
     { "type": "delay", "duration": 500 },
-    { "type": "system", "text": "[*] Attempting authentication bypass..." },
+    { "type": "system", "text": "[*] Attempting authentication bypass on {{target}}..." },
     { "type": "log", "text": "    Trying default credentials... FAILED" },
     { "type": "log", "text": "    Trying dictionary attack... FAILED" },
     { "type": "log", "text": "    Injecting buffer overflow payload..." },
@@ -33,7 +31,7 @@
     { "type": "log", "text": "    IDS evasion:    ACTIVE" },
     { "type": "log", "text": "    Log scrubbing:  ENABLED" },
     { "type": "delay", "duration": 600 },
-    { "type": "system", "text": "[*] Escalating privileges..." },
+    { "type": "system", "text": "[*] Escalating privileges on {{target}}..." },
     { "type": "progress", "label": "Privilege escalation", "progressDuration": 2000 },
     { "type": "delay", "duration": 400 },
     { "type": "system", "text": "[+] Access granted." },
@@ -42,6 +40,6 @@
     { "type": "log", "text": "    Shell:   /bin/bash" },
     { "type": "log", "text": "    Session: {{shortHash}}" },
     { "type": "delay", "duration": 300 },
-    { "type": "success", "text": "[✓] Breach successful. Root access obtained on {{server}}." }
+    { "type": "success", "text": "[✓] Breach successful. Root access obtained on {{target}}." }
   ]
 }

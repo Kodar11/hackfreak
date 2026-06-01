@@ -1,9 +1,8 @@
 {
   "steps": [
-    { "type": "header", "text": "╔══════════════════════════════════════════╗" },
-    { "type": "header", "text": "║        NETWORK SCANNER v3.7.1            ║" },
-    { "type": "header", "text": "╚══════════════════════════════════════════╝" },
+    { "type": "header", "text": "── NETWORK SCANNER v3.7.1 ──" },
     { "type": "delay", "duration": 500 },
+    { "type": "system", "text": "[*] Scanning target: {{target}}" },
     { "type": "system", "text": "[*] Initializing network interface..." },
     { "type": "log", "text": "    Binding to adapter eth0 ({{mac}})" },
     { "type": "log", "text": "    Setting promiscuous mode: ENABLED" },
@@ -40,12 +39,12 @@
     { "type": "system", "text": "[*] Fingerprinting operating systems..." },
     { "type": "progress", "label": "OS detection", "progressDuration": 2000 },
     { "type": "delay", "duration": 300 },
-    { "type": "system", "text": "[+] Scan complete." },
+    { "type": "system", "text": "[+] Scan complete for {{target}}." },
     { "type": "log", "text": "    Total hosts:     7" },
     { "type": "log", "text": "    Open ports:      23" },
     { "type": "log", "text": "    Services found:  18" },
     { "type": "log", "text": "    Data collected:  {{bytes}}" },
     { "type": "delay", "duration": 200 },
-    { "type": "success", "text": "[✓] Network scan finished successfully." }
+    { "type": "success", "text": "[✓] Network scan on {{target}} finished successfully." }
   ]
 }

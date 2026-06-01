@@ -1,6 +1,9 @@
 import { Terminal } from './components/Terminal';
+import { useTerminalStore } from './store/terminalStore';
 
 function App() {
+  const threatLevel = useTerminalStore((s) => s.threatLevel);
+
   return (
     <div className="app-wrapper">
       <header className="app-titlebar">
@@ -10,7 +13,10 @@ function App() {
             <span className="app-titlebar-dot app-titlebar-dot-yellow" />
             <span className="app-titlebar-dot app-titlebar-dot-green" />
           </div>
-          <span className="app-titlebar-title">Friction Terminal</span>
+          <span className="app-titlebar-title">Hacker Terminal</span>
+          <span className={`threat-badge threat-badge-${threatLevel.toLowerCase()}`}>
+            {threatLevel}
+          </span>
         </div>
         <div className="app-titlebar-buttons">
           <button

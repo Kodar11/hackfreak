@@ -14,9 +14,10 @@ import {
   randomBytes,
   randomProtocol,
 } from './randomGenerators';
+import { maybeInjectAlert } from './alerts';
 
 export interface SceneStep {
-  type: 'log' | 'delay' | 'progress' | 'success' | 'error' | 'header' | 'system';
+  type: 'log' | 'delay' | 'progress' | 'success' | 'error' | 'header' | 'system' | 'target_acquired';
   text?: string;
   duration?: number;
   label?: string;
@@ -27,8 +28,10 @@ export interface Scene {
   steps: SceneStep[];
 }
 
-function applyTemplates(text: string): string {
-  return text
+type Variables = Record<string, string>;
+
+function applyTemplates(text: string, variables: Variables): string {
+  let result = text
     .replace(/\{\{ip\}\}/g, randomIP())
     .replace(/\{\{hash\}\}/g, randomHash())
     .replace(/\{\{shortHash\}\}/g, randomShortHash())
@@ -42,53 +45,81 @@ function applyTemplates(text: string): string {
     .replace(/\{\{latency\}\}/g, String(randomLatency()))
     .replace(/\{\{bytes\}\}/g, randomBytes())
     .replace(/\{\{protocol\}\}/g, randomProtocol());
+
+  for (const [key, value] of Object.entries(variables)) {
+    result = result.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value);
+  }
+
+  result = result.replace(/\{\{target\}\}/g, variables['target'] ?? 'UNSPECIFIED');
+  result = result.replace(/\{\{name\}\}/g, variables['name'] ?? variables['target'] ?? 'UNKNOWN');
+  result = result.replace(/\{\{(\w+)\}\}/g, (_match, key) => variables[key] ?? 'CLASSIFIED');
+
+  return result;
 }
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function runScene(sceneName: string, sceneData: Scene): Promise<void> {
+async function renderTargetAcquired(
+  store: ReturnType<typeof useTerminalStore.getState>
+): Promise<void> {
+  store.addLine('', 'output');
+  await delay(800);
+  store.addLine('', 'output');
+  store.addLine('>>>  Target Acquired  <<<', 'header');
+  store.addLine('', 'output');
+  await delay(1200);
+}
+
+export async function runScene(sceneName: string, sceneData: Scene, variables: Variables = {}): Promise<void> {
   const store = useTerminalStore.getState();
   store.setProcessing(true);
+
+  let stepCount = 0;
 
   try {
     for (const step of sceneData.steps) {
       const currentState = useTerminalStore.getState();
       if (!currentState.isProcessing) break;
 
+      stepCount++;
+      if (stepCount % 4 === 0) {
+        maybeInjectAlert();
+      }
+
       switch (step.type) {
         case 'log':
           if (step.text) {
-            store.addLine(applyTemplates(step.text), 'output');
+            store.addLine(applyTemplates(step.text, variables), 'output');
           }
           await delay(80 + Math.random() * 120);
           break;
 
         case 'success':
           if (step.text) {
-            store.addLine(applyTemplates(step.text), 'success');
+            store.addLine(applyTemplates(step.text, variables), 'success');
           }
           await delay(100);
           break;
 
         case 'error':
           if (step.text) {
-            store.addLine(applyTemplates(step.text), 'error');
+            store.addLine(applyTemplates(step.text, variables), 'error');
           }
           await delay(100);
           break;
 
         case 'header':
           if (step.text) {
-            store.addLine(applyTemplates(step.text), 'header');
+            store.addLine(applyTemplates(step.text, variables), 'header');
           }
           await delay(150);
           break;
 
         case 'system':
           if (step.text) {
-            store.addLine(applyTemplates(step.text), 'system');
+            store.addLine(applyTemplates(step.text, variables), 'system');
           }
           await delay(100);
           break;
@@ -97,8 +128,12 @@ export async function runScene(sceneName: string, sceneData: Scene): Promise<voi
           await delay(step.duration ?? 1000);
           break;
 
+        case 'target_acquired':
+          await renderTargetAcquired(store);
+          break;
+
         case 'progress': {
-          const label = step.label ? applyTemplates(step.label) : 'Processing';
+          const label = step.label ? applyTemplates(step.label, variables) : 'Processing';
           const lineId = store.addLine('', 'progress');
           const totalDuration = step.progressDuration ?? 2000;
           const steps = 20;
