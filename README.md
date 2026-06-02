@@ -1,6 +1,6 @@
 # HackFreak
 
-A cinematic hacker terminal simulator inspired by movie hacking scenes, cyberpunk aesthetics, and intelligence workstations.
+A cinematic hacker terminal that feels straight out of a cyberpunk movie.
 
 ## Demo
 
@@ -12,11 +12,13 @@ A cinematic hacker terminal simulator inspired by movie hacking scenes, cyberpun
 
 ## What is HackFreak?
 
-HackFreak is a cinematic intelligence terminal designed to recreate the feeling of movie-style hacker consoles.
+Ever watched a movie hacker type a few commands and suddenly dozens of terminals, threat alerts, satellite feeds, and intelligence reports come alive?
 
-HackFreak is not a hacking tool. It is not a penetration testing utility, exploitation framework, or cybersecurity scanner. Everything inside the application is simulated, including filesystems, intelligence workflows, threat levels, satellite sequences, reports, and target activity.
+HackFreak recreates that experience.
 
-The project focuses on immersive terminal UX, atmosphere, storytelling, and cyberpunk interface experimentation.
+Create targets, run investigations, generate intelligence reports, monitor activity, trigger lockdowns, and immerse yourself in a futuristic terminal designed for fun, storytelling, and pure hacker-movie vibes.
+
+No real hacking. Just a ridiculously fun terminal experience.
 
 ## Features
 
