@@ -5,6 +5,7 @@ import { createTray } from './tray.js';
 
 app.on('ready', () => {
   const mainWindow = new BrowserWindow({
+    title: 'HackFreak',
     webPreferences: {
       preload: getPreloadPath(),
     },

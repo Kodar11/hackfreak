@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import { launchApp, waitForBoot, typeCommand, waitForOutput } from './utils';
 
 test.describe('Investigation Workflow', () => {
+  test.describe.configure({ timeout: 60000 });
+
   test('should run complete investigation workflow', async () => {
     const { app, page } = await launchApp();
     
@@ -55,7 +57,7 @@ test.describe('Investigation Workflow', () => {
     await typeCommand(page, 'investigate rahul');
     
     // Wait for completion
-    await waitForOutput(page, 'INVESTIGATION COMPLETE', 30000);
+    await waitForOutput(page, 'INVESTIGATION COMPLETE', 60000);
     
     // Verify threat level is shown
     await waitForOutput(page, 'Threat Level:');

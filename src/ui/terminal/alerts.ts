@@ -2,13 +2,13 @@ import { useTerminalStore } from '../store/terminalStore';
 
 const ALERT_MESSAGES = [
   'WARNING: Unauthorized activity detected on port 8443.',
-  'WARNING: Signal integrity compromised — channel 7.',
-  'WARNING: Satellite relay unstable — switching backup.',
+  'WARNING: Signal integrity compromised - channel 7.',
+  'WARNING: Satellite relay unstable - switching backup.',
   'WARNING: Encryption mismatch detected in transit.',
-  'WARNING: Threat signature identified — CODENAME WRAITH.',
+  'WARNING: Threat signature identified - CODENAME WRAITH.',
   'WARNING: Anomalous traffic pattern observed.',
   'WARNING: Firewall rule bypass attempted from external.',
-  'WARNING: Intrusion detection alert — sector 4.',
+  'WARNING: Intrusion detection alert - sector 4.',
   'WARNING: Unusual login attempt from unknown origin.',
   'WARNING: Data exfiltration pattern detected.',
   'WARNING: Network probe detected on subnet 10.0.0.0/24.',

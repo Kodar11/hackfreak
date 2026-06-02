@@ -3,7 +3,7 @@
     { "type": "header", "text": "── AI CORE v1.4.0 — BEHAVIORAL ANALYSIS ──" },
     { "type": "delay", "duration": 600 },
     { "type": "system", "text": "[*] AI CORE ONLINE" },
-    { "type": "log", "text": "    Model: Hacker-LLM v4.2" },
+    { "type": "log", "text": "    Model: HackFreak-LLM v4.2" },
     { "type": "log", "text": "    Parameters: 175B" },
     { "type": "log", "text": "    Context window: 128K tokens" },
     { "type": "delay", "duration": 500 },

@@ -1,16 +1,35 @@
 {
-  "appId": "com.n-ziermann.electron-course",
+  "appId": "com.kodar11.hackfreak",
+  "productName": "HackFreak",
   "files": ["dist-electron", "dist-react"],
   "extraResources": ["dist-electron/preload.cjs", "src/assets/**"],
   "icon": "./desktopIcon.png",
+  "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
   "mac": {
-    "target": "dmg"
+    "target": "dmg",
+    "artifactName": "HackFreak.${ext}"
   },
   "linux": {
     "target": "AppImage",
-    "category": "Utility"
+    "category": "Utility",
+    "artifactName": "HackFreak.${ext}"
   },
   "win": {
-    "target": ["portable", "msi"]
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "nsis": {
+    "artifactName": "HackFreak-Setup.${ext}"
+  },
+  "portable": {
+    "artifactName": "HackFreak-Portable.${ext}"
   }
 }

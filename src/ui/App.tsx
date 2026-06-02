@@ -23,7 +23,7 @@ function App() {
     <div className="app-wrapper">
       <header className="app-titlebar">
         <div className="app-titlebar-left">
-          <span className="app-titlebar-title">HACKER TERMINAL</span>
+          <span className="app-titlebar-title">HACKFREAK</span>
         </div>
         <div className="app-titlebar-center">
           {sessionId && (

@@ -16,7 +16,7 @@ test.describe('Boot Sequence', () => {
     
     await waitForBoot(page);
     
-    const prompt = page.locator('text=user@hacker:~ $');
+    const prompt = page.locator('text=user@hackfreak:~ $');
     await expect(prompt).toBeVisible();
     
     await app.close();

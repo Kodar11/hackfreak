@@ -165,17 +165,17 @@ const fileContents: Record<string, string> = {
     'Source: 185.220.101.34 -> 10.0.0.47',
     'Protocol: Encrypted (TLS 1.3)',
     'Payload size: 4,096 bytes',
-    'Status: CAPTURED — awaiting decryption',
+    'Status: CAPTURED - awaiting decryption',
     '',
     'Timestamp: 2025-06-01 03:17:58 UTC',
     'Source: 91.219.236.18 -> 10.0.0.12',
     'Protocol: Custom (unknown)',
     'Payload size: 512 bytes',
-    'Status: FLAGGED — anomalous pattern detected',
+    'Status: FLAGGED - anomalous pattern detected',
   ].join('\n'),
 
   '/intelligence/threat_assessment.pdf': [
-    '[BINARY FILE — PDF]',
+    '[BINARY FILE - PDF]',
     'Title: Quarterly Threat Assessment Q2-2025',
     'Classification: TOP SECRET // NOFORN',
     'Pages: 47',
@@ -188,10 +188,10 @@ const fileContents: Record<string, string> = {
     'Active channels: 23',
     'Last update: 2025-06-01 04:00:00 UTC',
     '',
-    'Channel 1: 142.5 MHz — ACTIVE',
-    'Channel 2: 437.2 MHz — ACTIVE',
-    'Channel 3: 1.2 GHz  — INTERMITTENT',
-    'Channel 4: 2.4 GHz  — ENCRYPTED',
+    'Channel 1: 142.5 MHz - ACTIVE',
+    'Channel 2: 437.2 MHz - ACTIVE',
+    'Channel 3: 1.2 GHz - INTERMITTENT',
+    'Channel 4: 2.4 GHz - ENCRYPTED',
   ].join('\n'),
 
   '/intelligence/signals/frequency_log.dat': [
@@ -209,12 +209,12 @@ const fileContents: Record<string, string> = {
     '=== SATELLITE FEED DATABASE ===',
     'Active satellites: 12',
     'Coverage: Global',
-    'Resolution: 0.12m (optical) / 0.5m (SAR)',
+    'Resolution: 0.12m optical / 0.5m SAR',
     '',
-    'KH-18 CRYSTAL  — Orbit: LEO 264km — Status: ONLINE',
-    'KH-19 ONYX     — Orbit: LEO 312km — Status: ONLINE',
-    'SIGINT-7       — Orbit: GEO       — Status: ONLINE',
-    'RELAY-3        — Orbit: MEO       — Status: STANDBY',
+    'KH-18 CRYSTAL - Orbit: LEO 264km - Status: ONLINE',
+    'KH-19 ONYX - Orbit: LEO 312km - Status: ONLINE',
+    'SIGINT-7 - Orbit: GEO - Status: ONLINE',
+    'RELAY-3 - Orbit: MEO - Status: STANDBY',
   ].join('\n'),
 
   '/intelligence/satellites/orbit_data.json': [
@@ -266,7 +266,7 @@ const fileContents: Record<string, string> = {
   ].join('\n'),
 
   '/network/hosts.txt': [
-    '# Hacker Terminal Network Hosts',
+    '# HackFreak Network Hosts',
     '10.0.0.1      gateway.local',
     '10.0.0.10     sigint.local',
     '10.0.0.11     crypto.local',
@@ -276,24 +276,24 @@ const fileContents: Record<string, string> = {
   ].join('\n'),
 
   '/logs/auth.log': [
-    'Jun  1 02:14:33 ht sshd[4821]: Accepted publickey for operator from 10.0.0.5',
-    'Jun  1 02:15:01 ht sudo: operator : TTY=pts/0 ; COMMAND=/bin/systemctl status sshd',
-    'Jun  1 03:22:17 ht sshd[5102]: Failed password for invalid user admin from 185.220.101.34',
-    'Jun  1 03:22:19 ht sshd[5102]: Connection closed by 185.220.101.34 [preauth]',
-    'Jun  1 04:01:44 ht sshd[5340]: Accepted publickey for analyst from 10.0.0.8',
+    'Jun  1 02:14:33 hf sshd[4821]: Accepted publickey for operator from 10.0.0.5',
+    'Jun  1 02:15:01 hf sudo: operator : TTY=pts/0 ; COMMAND=/bin/systemctl status sshd',
+    'Jun  1 03:22:17 hf sshd[5102]: Failed password for invalid user admin from 185.220.101.34',
+    'Jun  1 03:22:19 hf sshd[5102]: Connection closed by 185.220.101.34 [preauth]',
+    'Jun  1 04:01:44 hf sshd[5340]: Accepted publickey for analyst from 10.0.0.8',
   ].join('\n'),
 
   '/logs/syslog': [
-    'Jun  1 00:00:01 ht CRON[3201]: (root) CMD (/usr/local/bin/signal_scan)',
-    'Jun  1 01:00:01 ht CRON[3412]: (root) CMD (/usr/local/bin/signal_scan)',
-    'Jun  1 02:00:01 ht CRON[3601]: (root) CMD (/usr/local/bin/db_sync)',
-    'Jun  1 03:00:01 ht CRON[3801]: (root) CMD (/usr/local/bin/signal_scan)',
-    'Jun  1 03:14:22 ht intercept[4012]: Signal captured from 185.220.101.34',
-    'Jun  1 04:00:01 ht CRON[4201]: (root) CMD (/usr/local/bin/signal_scan)',
+    'Jun  1 00:00:01 hf CRON[3201]: (root) CMD (/usr/local/bin/signal_scan)',
+    'Jun  1 01:00:01 hf CRON[3412]: (root) CMD (/usr/local/bin/signal_scan)',
+    'Jun  1 02:00:01 hf CRON[3601]: (root) CMD (/usr/local/bin/db_sync)',
+    'Jun  1 03:00:01 hf CRON[3801]: (root) CMD (/usr/local/bin/signal_scan)',
+    'Jun  1 03:14:22 hf intercept[4012]: Signal captured from 185.220.101.34',
+    'Jun  1 04:00:01 hf CRON[4201]: (root) CMD (/usr/local/bin/signal_scan)',
   ].join('\n'),
 
   '/systems/boot.log': [
-    '[    0.000000] Hacker Terminal OS v4.2.1-hardened',
+    '[    0.000000] HackFreak OS v4.2.1-hardened',
     '[    0.001234] CPU: Intel Xeon E-2388G @ 3.20GHz',
     '[    0.005678] Memory: 64GB DDR4 ECC',
     '[    0.123456] Loading kernel modules...',
@@ -435,7 +435,7 @@ export function readFile(currentPath: string, target: string): { success: boolea
     return { success: true, content };
   }
 
-  return { success: false, error: `cat: ${target}: [BINARY DATA — cannot display]` };
+  return { success: false, error: `cat: ${target}: [BINARY DATA - cannot display]` };
 }
 
 export function ensureDirectory(path: string): void {
@@ -459,7 +459,7 @@ export function ensureDirectory(path: string): void {
 export function writeFile(path: string, content: string): { success: boolean; error?: string } {
   const normalized = normalizePath(path);
   const segments = normalized.split('/').filter(Boolean);
-  
+
   if (segments.length === 0) {
     return { success: false, error: 'write: invalid path' };
   }

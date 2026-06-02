@@ -1,6 +1,6 @@
 {
   "steps": [
-    { "type": "header", "text": "── EMERGENCY LOCKDOWN PROTOCOL ──" },
+    { "type": "header", "text": "--- EMERGENCY LOCKDOWN PROTOCOL ---" },
     { "type": "delay", "duration": 500 },
     { "type": "system", "text": "[!] THREAT LEVEL: CRITICAL" },
     { "type": "delay", "duration": 800 },
@@ -20,7 +20,7 @@
     { "type": "delay", "duration": 600 },
     { "type": "system", "text": "[*] Verifying Lockdown Integrity..." },
     { "type": "delay", "duration": 800 },
-    { "type": "success", "text": "[✓] LOCKDOWN COMPLETE" },
+    { "type": "success", "text": "[OK] LOCKDOWN COMPLETE" },
     { "type": "log", "text": "    All external channels: CLOSED" },
     { "type": "log", "text": "    Active sessions: PURGED" },
     { "type": "log", "text": "    Intelligence cache: ENCRYPTED" },

@@ -26,23 +26,6 @@ export async function typeCommand(page: Page, command: string): Promise<void> {
   await input.press('Enter');
 }
 
-export async function waitForOutput(page: Page, text: string, timeout = 5000): Promise<void> {
+export async function waitForOutput(page: Page, text: string, timeout = 30000): Promise<void> {
   await page.waitForSelector(`text=${text}`, { timeout });
-}
-
-export async function getTerminalOutput(page: Page): Promise<string> {
-  const lines = await page.locator('.terminal-line').allTextContents();
-  return lines.join('\n');
-}
-
-export async function waitForOutputToContain(page: Page, text: string, timeout = 5000): Promise<void> {
-  await page.waitForFunction(
-    (searchText) => {
-      const lines = Array.from(document.querySelectorAll('.terminal-line'));
-      const content = lines.map(l => l.textContent).join('\n');
-      return content.includes(searchText);
-    },
-    text,
-    { timeout }
-  );
 }

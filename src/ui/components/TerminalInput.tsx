@@ -75,13 +75,13 @@ export function TerminalInput({ disabled }: TerminalInputProps) {
       e.preventDefault();
       const trimmed = input.trim();
       if (!trimmed) return;
-      
-      const matches = ALL_COMMANDS.filter(cmd => cmd.startsWith(trimmed));
+
+      const matches = ALL_COMMANDS.filter((cmd) => cmd.startsWith(trimmed));
       if (matches.length === 1) {
         setInput(matches[0]);
       } else if (matches.length > 1) {
         addLine(trimmed, 'input');
-        matches.forEach(m => addLine(`  ${m}`, 'output'));
+        matches.forEach((m) => addLine(`  ${m}`, 'output'));
       }
       return;
     }
@@ -127,7 +127,7 @@ export function TerminalInput({ disabled }: TerminalInputProps) {
     return (
       <div className="terminal-prompt-row">
         <span className="terminal-process-active">
-          [PROCESS ACTIVE — INPUT LOCKED]
+          [PROCESS ACTIVE - INPUT LOCKED]
         </span>
       </div>
     );
@@ -158,7 +158,7 @@ export function TerminalInput({ disabled }: TerminalInputProps) {
   return (
     <div className="terminal-prompt-row" onClick={() => inputRef.current?.focus()}>
       <span className="terminal-prompt">
-        <span className="terminal-prompt-user">user@hacker</span>
+        <span className="terminal-prompt-user">user@hackfreak</span>
         <span className="terminal-prompt-sep">:</span>
         <span className="terminal-prompt-dir">{displayPath}</span>
         <span className="terminal-prompt-sep"> $ </span>

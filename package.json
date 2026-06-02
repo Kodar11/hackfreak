@@ -1,7 +1,17 @@
 {
-  "name": "electron-course",
-  "private": true,
-  "version": "0.0.0",
+  "name": "hackfreak",
+  "version": "1.0.0",
+  "description": "A cinematic hacker terminal simulator inspired by movie hacking scenes and intelligence workstations.",
+  "author": "Kodar11",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kodar11/hacker-terminal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kodar11/hacker-terminal/issues"
+  },
+  "homepage": "https://github.com/Kodar11/hacker-terminal#readme",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {

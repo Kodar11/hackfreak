@@ -99,7 +99,7 @@ function buildVariables(target: string | undefined): Record<string, string> {
 export async function executeCommand(input: string): Promise<void> {
   const store = useTerminalStore.getState();
   const displayPath = getDisplayPath(store.currentDir);
-  store.addLine(`user@hacker:${displayPath} $ ${input}`, 'input');
+  store.addLine(`user@hackfreak:${displayPath} $ ${input}`, 'input');
 
   const { command, subcommand, args } = parseCommand(input);
 
@@ -203,25 +203,25 @@ export async function executeCommand(input: string): Promise<void> {
         store.addLine('Usage: network <target>', 'error');
         break;
       }
-      
+
       const persona = usePersonaStore.getState().getPersona(target);
       if (!persona) {
         store.addLine(`Target "${target}" not found.`, 'error');
         break;
       }
-      
+
       store.addLine('', 'output');
-      store.addLine('── Network Analysis ──', 'header');
+      store.addLine('--- Network Analysis ---', 'header');
       store.addLine('', 'output');
       store.addLine(target, 'system');
-      
-      const fields = Object.keys(persona).filter(k => k !== 'name');
+
+      const fields = Object.keys(persona).filter((k) => k !== 'name');
       fields.forEach((field, i) => {
         const isLast = i === fields.length - 1;
-        const prefix = isLast ? '└── ' : '├── ';
+        const prefix = isLast ? '`-- ' : '|-- ';
         store.addLine(`${prefix}${field}`, 'output');
       });
-      
+
       store.addLine('', 'output');
       break;
     }
@@ -232,15 +232,15 @@ export async function executeCommand(input: string): Promise<void> {
         store.addLine('Usage: timeline <target>', 'error');
         break;
       }
-      
+
       const persona = usePersonaStore.getState().getPersona(target);
       const classification = randomClassification();
-      
+
       store.addLine('', 'output');
-      store.addLine('── Timeline Reconstruction ──', 'header');
+      store.addLine('--- Timeline Reconstruction ---', 'header');
       store.addLine(`CLASSIFICATION: ${classification}`, 'system');
       store.addLine('', 'output');
-      
+
       const events = [
         { time: '09:14', event: 'Device Activated' },
         { time: '09:22', event: 'Network Connected' },
@@ -250,11 +250,11 @@ export async function executeCommand(input: string): Promise<void> {
         { time: '11:03', event: 'Signal Recovered' },
         { time: '11:28', event: 'Communication Intercepted' },
       ];
-      
+
       events.forEach(({ time, event }) => {
         store.addLine(`[${time}] ${event}`, 'output');
       });
-      
+
       store.addLine('', 'output');
       break;
     }
@@ -265,30 +265,29 @@ export async function executeCommand(input: string): Promise<void> {
         store.addLine('Usage: monitor <target>', 'error');
         break;
       }
-      
+
       store.addLine(`Starting live monitor: ${target}`, 'system');
       store.addLine('Press Ctrl+C to stop', 'output');
       store.addLine('', 'output');
       store.setMonitorActive(true);
-      
+
       const monitorLoop = async () => {
         while (useTerminalStore.getState().monitorActive) {
           const signal = randomScore(60, 99);
           const drift = randomScore(5, 50);
           const packets = randomScore(100, 500);
-          
+
           store.addLine(`Signal Strength: ${signal}%`, 'output');
           store.addLine(`Location Drift: ${drift}m`, 'output');
-          store.addLine(`Connection Status: ACTIVE`, 'success');
+          store.addLine('Connection Status: ACTIVE', 'success');
           store.addLine(`Packet Flow: ${packets}/s`, 'output');
           store.addLine('', 'output');
-          
+
           await maybeTriggerGlitch();
-          
-          await new Promise(r => setTimeout(r, 3000));
+          await new Promise((r) => setTimeout(r, 3000));
         }
       };
-      
+
       monitorLoop();
       break;
     }
@@ -314,13 +313,13 @@ export async function executeCommand(input: string): Promise<void> {
         store.addLine('Usage: report <target>', 'error');
         break;
       }
-      
+
       const persona = usePersonaStore.getState().getPersona(target);
       if (!persona) {
         store.addLine(`Target "${target}" not found. Create with: persona create ${target}`, 'error');
         break;
       }
-      
+
       await generateReport(target, persona);
       break;
     }
@@ -331,7 +330,7 @@ export async function executeCommand(input: string): Promise<void> {
         store.addLine('Usage: investigate <target>', 'error');
         break;
       }
-      
+
       await runAuthorizationSequence('investigate');
       await runInvestigation(target);
       break;
@@ -344,13 +343,13 @@ export async function executeCommand(input: string): Promise<void> {
           store.addLine('Usage: export report <target>', 'error');
           break;
         }
-        
+
         const persona = usePersonaStore.getState().getPersona(target);
         if (!persona) {
           store.addLine(`Target "${target}" not found.`, 'error');
           break;
         }
-        
+
         await exportReport(target, persona);
       } else {
         store.addLine(`ERROR: Unknown export type "${subcommand || ''}".`, 'error');
@@ -383,12 +382,12 @@ export async function executeCommand(input: string): Promise<void> {
         const target = args[0];
         const vars = buildVariables(target);
         store.setThreatLevel(THREAT_LEVELS[command] ?? 'LOW');
-        
+
         const glitchScenes = ['satellite', 'locate', 'ai_analyze'];
         if (glitchScenes.includes(command)) {
           await maybeTriggerGlitch();
         }
-        
+
         await runScene(command, scene, vars);
         store.setThreatLevel('LOW');
       } else {
@@ -437,12 +436,12 @@ async function handlePersona(subcommand: string, args: string[]): Promise<void> 
         store.addLine(`Persona "${name}" not found.`, 'error');
         break;
       }
-      
+
       const classification = randomClassification();
       const behaviorScore = randomScore(50, 95);
       const riskScore = randomScore(40, 90);
       const confidence = randomScore(70, 99);
-      
+
       store.addLine('', 'output');
       store.addLine('=================================================', 'header');
       store.addLine('TARGET PROFILE', 'header');
@@ -458,12 +457,12 @@ async function handlePersona(subcommand: string, args: string[]): Promise<void> 
       store.addLine(`Confidence: ${confidence}%`, 'output');
       store.addLine('', 'output');
       store.addLine('Known Assets:', 'system');
-      
-      const assets = Object.keys(persona).filter(k => k !== 'name');
-      assets.forEach(asset => {
-        store.addLine(`  • ${asset}`, 'output');
+
+      const assets = Object.keys(persona).filter((k) => k !== 'name');
+      assets.forEach((asset) => {
+        store.addLine(`  - ${asset}`, 'output');
       });
-      
+
       store.addLine('', 'output');
       store.addLine('Status: ACTIVE', 'success');
       store.addLine('=================================================', 'header');
@@ -529,15 +528,15 @@ function delay(ms: number): Promise<void> {
 
 async function generateReport(target: string, persona: Record<string, string>): Promise<void> {
   const store = useTerminalStore.getState();
-  
+
   const classification = randomClassification();
   const behaviorScore = randomScore(50, 95);
   const riskScore = randomScore(40, 90);
   const confidence = randomScore(70, 99);
-  
-  const assets = Object.keys(persona).filter(k => k !== 'name');
+
+  const assets = Object.keys(persona).filter((k) => k !== 'name');
   const targetName = persona.name || target;
-  
+
   store.addLine('', 'output');
   store.addLine('================================================', 'header');
   store.addLine('INTELLIGENCE REPORT', 'header');
@@ -552,18 +551,18 @@ async function generateReport(target: string, persona: Record<string, string>): 
   store.addLine(`Confidence: ${confidence}%`, 'output');
   store.addLine('', 'output');
   store.addLine('Known Assets:', 'system');
-  
-  assets.forEach(asset => {
-    store.addLine(`  • ${asset}`, 'output');
+
+  assets.forEach((asset) => {
+    store.addLine(`  - ${asset}`, 'output');
   });
-  
+
   store.addLine('', 'output');
   store.addLine('Summary:', 'system');
-  store.addLine(`  Target exhibits elevated communication activity`, 'output');
-  store.addLine(`  across multiple channels.`, 'output');
+  store.addLine('  Target exhibits elevated communication activity', 'output');
+  store.addLine('  across multiple channels.', 'output');
   store.addLine('', 'output');
-  store.addLine(`  Behavioral indicators suggest moderate`, 'output');
-  store.addLine(`  operational risk.`, 'output');
+  store.addLine('  Behavioral indicators suggest moderate', 'output');
+  store.addLine('  operational risk.', 'output');
   store.addLine('', 'output');
   store.addLine('================================================', 'header');
   store.addLine('', 'output');
@@ -572,16 +571,16 @@ async function generateReport(target: string, persona: Record<string, string>): 
 async function runInvestigation(target: string): Promise<void> {
   const store = useTerminalStore.getState();
   const persona = usePersonaStore.getState().getPersona(target);
-  
+
   store.setProcessing(true);
   store.setThreatLevel('HIGH');
-  
+
   try {
     store.addLine('', 'output');
-    store.addLine('── INVESTIGATION PROTOCOL ──', 'header');
+    store.addLine('--- INVESTIGATION PROTOCOL ---', 'header');
     store.addLine(`Target: ${target}`, 'system');
     store.addLine('', 'output');
-    
+
     store.addLine('Phase 1: Asset Discovery', 'header');
     await delay(500);
     store.addLine('  Scanning Assets...', 'system');
@@ -593,36 +592,36 @@ async function runInvestigation(target: string): Promise<void> {
     store.addLine('  Generating Profile...', 'system');
     await delay(600);
     store.addLine('', 'output');
-    
+
     await maybeTriggerGlitch();
-    
+
     store.addLine('Phase 2: Deep Analysis', 'header');
     await delay(500);
-    
+
     if (persona) {
       store.addLine(`  Running: persona show ${target}`, 'output');
       await delay(300);
       await generateReport(target, persona);
-      
+
       store.addLine(`  Running: network ${target}`, 'output');
       await delay(300);
-      const fields = Object.keys(persona).filter(k => k !== 'name');
+      const fields = Object.keys(persona).filter((k) => k !== 'name');
       store.addLine('', 'output');
-      store.addLine('── Network Analysis ──', 'header');
+      store.addLine('--- Network Analysis ---', 'header');
       store.addLine(target, 'system');
       fields.forEach((field, i) => {
         const isLast = i === fields.length - 1;
-        const prefix = isLast ? '└── ' : '├── ';
+        const prefix = isLast ? '`-- ' : '|-- ';
         store.addLine(`${prefix}${field}`, 'output');
       });
       store.addLine('', 'output');
       await delay(500);
-      
+
       store.addLine(`  Running: timeline ${target}`, 'output');
       await delay(300);
       const classification = randomClassification();
       store.addLine('', 'output');
-      store.addLine('── Timeline Reconstruction ──', 'header');
+      store.addLine('--- Timeline Reconstruction ---', 'header');
       store.addLine(`CLASSIFICATION: ${classification}`, 'system');
       store.addLine('', 'output');
       const events = [
@@ -639,7 +638,7 @@ async function runInvestigation(target: string): Promise<void> {
       });
       store.addLine('', 'output');
       await delay(500);
-      
+
       store.addLine(`  Running: ai analyze ${target}`, 'output');
       await delay(300);
       const vars = buildVariables(target);
@@ -648,17 +647,17 @@ async function runInvestigation(target: string): Promise<void> {
       store.addLine(`  Target "${target}" has no persona data.`, 'error');
       store.addLine(`  Create with: persona create ${target}`, 'output');
     }
-    
+
     await maybeTriggerGlitch();
-    
+
     store.addLine('', 'output');
     store.addLine('Phase 3: Investigation Summary', 'header');
     await delay(600);
-    
-    const assetCount = persona ? Object.keys(persona).filter(k => k !== 'name').length : 0;
+
+    const assetCount = persona ? Object.keys(persona).filter((k) => k !== 'name').length : 0;
     const finalConfidence = randomScore(85, 98);
     const threatLevel: ThreatLevel = assetCount > 3 ? 'HIGH' : assetCount > 1 ? 'MEDIUM' : 'LOW';
-    
+
     store.addLine('', 'output');
     store.addLine('================================================', 'header');
     store.addLine('INVESTIGATION COMPLETE', 'header');
@@ -670,7 +669,7 @@ async function runInvestigation(target: string): Promise<void> {
     store.addLine('', 'output');
     store.addLine('================================================', 'header');
     store.addLine('', 'output');
-    
+
     store.setThreatLevel(threatLevel);
   } finally {
     store.setProcessing(false);
@@ -679,17 +678,17 @@ async function runInvestigation(target: string): Promise<void> {
 
 async function exportReport(target: string, persona: Record<string, string>): Promise<void> {
   const store = useTerminalStore.getState();
-  
+
   store.addLine(`Exporting report for ${target}...`, 'system');
   await delay(500);
-  
+
   const classification = randomClassification();
   const behaviorScore = randomScore(50, 95);
   const riskScore = randomScore(40, 90);
   const confidence = randomScore(70, 99);
-  const assets = Object.keys(persona).filter(k => k !== 'name');
+  const assets = Object.keys(persona).filter((k) => k !== 'name');
   const targetName = persona.name || target;
-  
+
   const reportContent = [
     '================================================',
     'INTELLIGENCE REPORT',
@@ -704,7 +703,7 @@ async function exportReport(target: string, persona: Record<string, string>): Pr
     `Confidence: ${confidence}%`,
     '',
     'Known Assets:',
-    ...assets.map(a => `  • ${a}`),
+    ...assets.map((a) => `  - ${a}`),
     '',
     'Summary:',
     '  Target exhibits elevated communication activity',
@@ -715,12 +714,12 @@ async function exportReport(target: string, persona: Record<string, string>): Pr
     '',
     '================================================',
   ].join('\n');
-  
+
   const filePath = `/intelligence/reports/${target}_report.txt`;
   const result = writeFile(filePath, reportContent);
-  
+
   if (result.success) {
-    store.addLine(`Report exported successfully.`, 'success');
+    store.addLine('Report exported successfully.', 'success');
     store.addLine(`Location: ${filePath}`, 'output');
     store.addLine(`View with: cat ${filePath}`, 'output');
   } else {

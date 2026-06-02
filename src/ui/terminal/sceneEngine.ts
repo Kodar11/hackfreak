@@ -159,7 +159,7 @@ export async function runScene(sceneName: string, sceneData: Scene, variables: V
             const progress = Math.round((i / steps) * 100);
             const filled = Math.round((i / steps) * 30);
             const empty = 30 - filled;
-            const bar = '█'.repeat(filled) + '░'.repeat(empty);
+            const bar = '#'.repeat(filled) + '.'.repeat(empty);
             store.updateLine(lineId, {
               text: `${label}: [${bar}] ${progress}%`,
               progress,
