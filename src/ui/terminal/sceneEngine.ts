@@ -30,7 +30,7 @@ export interface Scene {
 
 type Variables = Record<string, string>;
 
-function applyTemplates(text: string, variables: Variables): string {
+export function applyTemplates(text: string, variables: Variables): string {
   let result = text
     .replace(/\{\{ip\}\}/g, randomIP())
     .replace(/\{\{hash\}\}/g, randomHash())
