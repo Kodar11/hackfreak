@@ -4,11 +4,8 @@ A cinematic hacker terminal simulator inspired by movie hacking scenes, cyberpun
 
 ## Demo
 
-GIF_PLACEHOLDER
-
 ![Demo GIFs](<HackFreak GIF 2.gif>)
 
-VIDEO_PLACEHOLDER
 
 <video controls src="Timeline 1.mov" title="Title"></video>
 
