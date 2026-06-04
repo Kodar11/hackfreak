@@ -10,6 +10,20 @@ A cinematic hacker terminal that feels straight out of a cyberpunk movie.
 <video controls src="Timeline 1.mov" title="Title"></video>
 
 
+## Download
+
+### Windows
+
+[Download HackFreak for Windows](https://github.com/Kodar11/hacker-terminal/releases/latest)
+
+### macOS
+
+Coming Soon
+
+### Linux
+
+Coming Soon
+
 ## What is HackFreak?
 
 Ever watched a movie hacker type a few commands and suddenly dozens of terminals, threat alerts, satellite feeds, and intelligence reports come alive?
